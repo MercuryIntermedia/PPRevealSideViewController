@@ -542,9 +542,6 @@
                     } else {
                         if (completionBlock) completionBlock();
                     }
-					else{
-						if (completionBlock) completionBlock();
-					}
 //                }
             };
             

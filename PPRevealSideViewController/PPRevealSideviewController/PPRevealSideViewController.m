@@ -9,7 +9,7 @@
 #import "PPRevealSideViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
-#import <PPHelpMe/PPHelpMe.h>
+#import "PPGlobalNavigatorMetrics.h"
 
 #pragma mark - Unit constants
 
@@ -150,8 +150,6 @@
 
         // set default options (leaving this settings for now but would be nice if they used the settings class so as to take advantage of the default settings)
         self.options = PPRevealSideOptionsShowShadows | PPRevealSideOptionsBounceAnimations | PPRevealSideOptionsCloseCompletlyBeforeOpeningNewDirection;
-        // set default options
-        self.options = PPRevealSideOptionsShowShadows | PPRevealSideOptionsBounceAnimations | PPRevealSideOptionsCloseCompletlyBeforeOpeningNewDirection | PPRevealSideOptionsiOS7StatusBarFading;
         
         self.bouncingOffset = -1.0;
         
@@ -735,6 +733,11 @@
 }
 
 - (void)statusBarFrameWillChange:(NSNotification *)notif {
+    // Short circuiting this on iOS 7+ because for some reason it breaks rotation logic.
+    if (PPSystemVersionGreaterOrEqualThan(7)) {
+        return;
+    }
+    
     // Could be needed in future bug fixes
     //    NSValue* rectValue = [[notif userInfo] valueForKey:UIApplicationStatusBarFrameUserInfoKey];
     //    CGRect newFrame;
@@ -1229,9 +1232,9 @@
     //if (_wasClosed)
     // Don't know why I limited this test to the case pan from close. The same set min should happen when from open.
     // That's probably a failed attempt to handle slide from left to right when having controllers on both side. This works fine without this test
-    if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight) offset = MIN(CGRectGetWidth(PPScreenBounds()), offset);
+//    if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight) offset = MIN(CGRectGetWidth(PPScreenBounds()), offset);
     
-    if (direction == PPRevealSideDirectionTop || direction == PPRevealSideDirectionBottom) offset = MIN(CGRectGetHeight(self.view.frame), offset);
+//    if (direction == PPRevealSideDirectionTop || direction == PPRevealSideDirectionBottom) offset = MIN(CGRectGetHeight(self.view.frame), offset);
     CGRect rectToReturn = CGRectZero;
     rectToReturn.size = _rootViewController.view.frame.size;
     
@@ -1331,17 +1334,26 @@
     return inset;
 }
 
-- (CGFloat)getOffsetForDirection:(PPRevealSideDirection)direction andInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGFloat offset = [[_viewControllersOffsets objectForKey:[NSNumber numberWithInt:direction]] floatValue];
+- (CGFloat) getOffsetForDirection:(PPRevealSideDirection)direction andInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    CGFloat offset = [[_viewControllersOffsets objectForKey:[NSNumber numberWithInteger:direction]] floatValue];
     
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation) && offset != 0.0 && !PPSystemVersionGreaterOrEqualThan(8.0)) {
-        if (![self isOptionEnabled:PPRevealSideOptionsKeepOffsetOnRotation]) {
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        if (![self isOptionEnabled:PPRevealSideOptionsKeepOffsetOnRotation])
+        {
             // Take an orientation free rect
             CGRect portraitBounds = [UIScreen mainScreen].bounds;
+            if (PPSystemVersionGreaterOrEqualThan(8)) {
+                CGFloat pWidth = portraitBounds.size.width;
+                portraitBounds.size.width = portraitBounds.size.height;
+                portraitBounds.size.height = pWidth;
+            }
             // Get the difference between width and height
             CGFloat diff = 0.0;
-            if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight) diff = portraitBounds.size.height - portraitBounds.size.width;
-            if (direction == PPRevealSideDirectionTop) diff = -(portraitBounds.size.height - portraitBounds.size.width);
+            if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight)
+                diff = portraitBounds.size.height - portraitBounds.size.width;
+            if (direction == PPRevealSideDirectionTop)
+                diff = -(portraitBounds.size.height - portraitBounds.size.width);
             
             // Store the offset + the diff
             offset += diff;
@@ -1597,14 +1609,14 @@
     
     if (!PPSystemVersionGreaterOrEqualThan(5.0)) [_rootViewController willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
-    [self resizeCurrentView];
+//    [self resizeCurrentView];
     
     for (id key in _viewControllers.allKeys) {
         UIViewController *controller = (UIViewController *)[_viewControllers objectForKey:key];
         
         if (controller.view.superview) {
-            controller.view.frame = [self getSideViewFrameFromRootFrame:_rootViewController.view.frame
-                                                           andDirection:[key intValue]];
+//            controller.view.frame = [self getSideViewFrameFromRootFrame:_rootViewController.view.frame
+//                                                           andDirection:[key intValue]];
             if (!PPSystemVersionGreaterOrEqualThan(5.0)) [controller willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
         }
     }

@@ -1,6 +1,6 @@
 
 *.xcscheme
-
+*.xcworkspace
 *.plist
-
+.DS_Store
 /Pods/

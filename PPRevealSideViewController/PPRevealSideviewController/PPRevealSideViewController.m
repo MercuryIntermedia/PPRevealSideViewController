@@ -9,7 +9,7 @@
 #import "PPRevealSideViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
-#import "PPGlobalNavigatorMetrics.h"
+#import <PPHelpMe/PPHelpMe.h>
 
 #pragma mark - Unit constants
 
@@ -17,51 +17,51 @@
 
 - (id) init
 {
-	if ((self = [super init]) != nil) {
-		self.defaultOffset = 70.0;
-		self.defaultOffsetBouncing = 5.0;
-		self.openAnimationTime = 0.3;
-		self.openAnimationTimeBouncingRatio = 0.3;
-		self.bounceErrorOffset = 14.0;
-		self.divisionNumber = 5.0;
-		self.offsetTriggerChoseDirection = 3.0;
-		self.offsetTriggerChangeDirection = 0.0;
-		self.maxTriggerOffset = 100.0;
-
-		self.shadowOffset = CGSizeZero;
-		self.shadowOpacity = 0.75;
-		self.shadowRadius = 10.0;
-		self.shadowColor = [UIColor blackColor];
-	}
-	
-	return self;
+    if ((self = [super init]) != nil) {
+        self.defaultOffset = 70.0;
+        self.defaultOffsetBouncing = 5.0;
+        self.openAnimationTime = 0.3;
+        self.openAnimationTimeBouncingRatio = 0.3;
+        self.bounceErrorOffset = 14.0;
+        self.divisionNumber = 5.0;
+        self.offsetTriggerChoseDirection = 3.0;
+        self.offsetTriggerChangeDirection = 0.0;
+        self.maxTriggerOffset = 100.0;
+        
+        self.shadowOffset = CGSizeZero;
+        self.shadowOpacity = 0.75;
+        self.shadowRadius = 10.0;
+        self.shadowColor = [UIColor blackColor];
+    }
+    
+    return self;
 }
 
 - (id) copyWithZone: (NSZone *) inZone
 {
-	PPRevealSideViewSettings		*settingsCopy = [[PPRevealSideViewSettings alloc] init];
-
-	settingsCopy.defaultOffset = self.defaultOffset;
-	settingsCopy.defaultOffsetBouncing = self.defaultOffsetBouncing;
-	settingsCopy.openAnimationTime = self.openAnimationTime;
-	settingsCopy.openAnimationTimeBouncingRatio = self.openAnimationTimeBouncingRatio;
-	settingsCopy.bounceErrorOffset = self.bounceErrorOffset;
-	settingsCopy.divisionNumber = self.divisionNumber;
-	settingsCopy.offsetTriggerChoseDirection = self.offsetTriggerChoseDirection;
-	settingsCopy.offsetTriggerChangeDirection = self.offsetTriggerChangeDirection;
-	settingsCopy.maxTriggerOffset = self.maxTriggerOffset;
-
-	settingsCopy.shadowOffset = self.shadowOffset;
-	settingsCopy.shadowOpacity = self.shadowOpacity;
-	settingsCopy.shadowRadius = self.shadowRadius;
-	settingsCopy.shadowColor = PP_AUTORELEASE([self.shadowColor copy]);
-	
-	return settingsCopy;
+    PPRevealSideViewSettings		*settingsCopy = [[PPRevealSideViewSettings alloc] init];
+    
+    settingsCopy.defaultOffset = self.defaultOffset;
+    settingsCopy.defaultOffsetBouncing = self.defaultOffsetBouncing;
+    settingsCopy.openAnimationTime = self.openAnimationTime;
+    settingsCopy.openAnimationTimeBouncingRatio = self.openAnimationTimeBouncingRatio;
+    settingsCopy.bounceErrorOffset = self.bounceErrorOffset;
+    settingsCopy.divisionNumber = self.divisionNumber;
+    settingsCopy.offsetTriggerChoseDirection = self.offsetTriggerChoseDirection;
+    settingsCopy.offsetTriggerChangeDirection = self.offsetTriggerChangeDirection;
+    settingsCopy.maxTriggerOffset = self.maxTriggerOffset;
+    
+    settingsCopy.shadowOffset = self.shadowOffset;
+    settingsCopy.shadowOpacity = self.shadowOpacity;
+    settingsCopy.shadowRadius = self.shadowRadius;
+    settingsCopy.shadowColor = PP_AUTORELEASE([self.shadowColor copy]);
+    
+    return settingsCopy;
 }
 
 - (void) dealloc {
     PP_RELEASE(_shadowColor);
-
+    
 #if !PP_ARC_ENABLED
     [super dealloc];
 #endif
@@ -72,7 +72,6 @@
 #pragma mark -
 @interface PPRevealSideViewController ()
 
-@property (nonatomic, strong) UIView *underStatusBarView;
 @property (nonatomic, assign) BOOL hideStatusBar;
 
 - (void)setRootViewController:(UIViewController *)controller replaceToOrigin:(BOOL)replace;
@@ -128,26 +127,25 @@
 @synthesize options = _options;
 @synthesize bouncingOffset = _bouncingOffset;
 @synthesize delegate = _delegate;
-@synthesize underStatusBarView = _underStatusBarView;
 
 + (PPRevealSideViewSettings *) defaultSettings
 {
-	static PPRevealSideViewSettings		*sDefaultSettings = nil;
-	
-	if (sDefaultSettings == nil) {
-		sDefaultSettings = [[PPRevealSideViewSettings alloc] init];
-	}
-	
-	return sDefaultSettings;
+    static PPRevealSideViewSettings		*sDefaultSettings = nil;
+    
+    if (sDefaultSettings == nil) {
+        sDefaultSettings = [[PPRevealSideViewSettings alloc] init];
+    }
+    
+    return sDefaultSettings;
 }
 
 - (id) initWithRootViewController:(UIViewController*)rootViewController
-	fullScreen: (BOOL) inFullScreen
+                       fullScreen: (BOOL) inFullScreen
 {
     self = [super init];
     if (self) {
-		self.wantsFullScreenLayout = inFullScreen;
-
+        self.wantsFullScreenLayout = inFullScreen;
+        
         // set default options (leaving this settings for now but would be nice if they used the settings class so as to take advantage of the default settings)
         self.options = PPRevealSideOptionsShowShadows | PPRevealSideOptionsBounceAnimations | PPRevealSideOptionsCloseCompletlyBeforeOpeningNewDirection;
         
@@ -175,7 +173,7 @@
 
 - (id) initWithRootViewController:(UIViewController*)rootViewController {
     self = [self initWithRootViewController: rootViewController fullScreen: NO];
-
+    
     return self;
 }
 
@@ -352,19 +350,15 @@
                                                    andDirection:direction];
     
     NSTimeInterval animationTime = self.settings.openAnimationTime;
-	//    if ([self canCrossOffsets]) animationTime = OpenAnimationTime;
-	//    else animationTime = OpenAnimationTime;
+    //    if ([self canCrossOffsets]) animationTime = OpenAnimationTime;
+    //    else animationTime = OpenAnimationTime;
     
     UIViewAnimationOptions options = UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionLayoutSubviews;
     
     // Slightly delay this thing, seems to be a bug somewhere
-    double delayInSeconds = 0.01;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        if (self.underStatusBarView && [self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-            [self setStatusBarHidden:YES];
-        }
-    });
+    if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
+        [self setStatusBarHidden:YES];
+    }
     
     if (animated) {
         [UIView animateWithDuration:animationTime
@@ -520,34 +514,34 @@
             
             // this is the completion block when you pop then push the new controller
             void (^smallAnimBlockCompletion)(BOOL) = ^(BOOL finished) {
-//                if (finished) {
-// if this isn't allowed to execute, gestures remain attached, where they shouldn't be, etc. basically everything breaks
-                    [self informDelegateWithOptionalSelector:@selector(pprevealSideViewController:didPopToController:) withParam:centerController];
-                    
-                    // remove the view (don't need to surcharge (not english this word ? ... ) all the interface).
-                    UIViewController *oldController = (UIViewController *)[_viewControllers objectForKey:[NSNumber numberWithInt:directionToClose]];
-                    
-                    [self removeControllerFromView:oldController animated:animated];
-                    
-                    _animationInProgress = NO;
-                    
-                    if (self.underStatusBarView && [self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-                        [self setStatusBarHidden:NO];
-                    }
-                    
-                    if (controllerToPush) {
-                        [self pushViewController:controllerToPush onDirection:direction withOffset:offset animated:animated completion:completionBlock];
-                    } else {
-                        if (completionBlock) completionBlock();
-                    }
-//                }
+                //                if (finished) {
+                // if this isn't allowed to execute, gestures remain attached, where they shouldn't be, etc. basically everything breaks
+                [self informDelegateWithOptionalSelector:@selector(pprevealSideViewController:didPopToController:) withParam:centerController];
+                
+                // remove the view (don't need to surcharge (not english this word ? ... ) all the interface).
+                UIViewController *oldController = (UIViewController *)[_viewControllers objectForKey:[NSNumber numberWithInt:directionToClose]];
+                
+                [self removeControllerFromView:oldController animated:animated];
+                
+                _animationInProgress = NO;
+                
+                if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
+                    [self setStatusBarHidden:NO];
+                }
+                
+                if (controllerToPush) {
+                    [self pushViewController:controllerToPush onDirection:direction withOffset:offset animated:animated completion:completionBlock];
+                } else {
+                    if (completionBlock) completionBlock();
+                }
+                //                }
             };
             
             // execute the blocks depending on animated or not
             if (animated) {
                 NSTimeInterval animationTime = self.settings.openAnimationTime;
-				//                if ([self canCrossOffsets]) animationTime = OpenAnimationTime;
-				//                else animationTime = OpenAnimationTime;
+                //                if ([self canCrossOffsets]) animationTime = OpenAnimationTime;
+                //                else animationTime = OpenAnimationTime;
                 
                 [UIView animateWithDuration:animationTime
                                       delay:0.0
@@ -779,14 +773,12 @@
 - (void)setOption:(PPRevealSideOptions)option {
     _options |= option;
     if (option == PPRevealSideOptionsShowShadows) [self handleShadows];
-    if (option == PPRevealSideOptionsiOS7StatusBarMoving || option == PPRevealSideOptionsiOS7StatusBarFading) self.underStatusBarView = nil;
 }
 
 - (void)resetOption:(PPRevealSideOptions)option {
     _options |= option;
     _options ^= option;
     if (option == PPRevealSideOptionsShowShadows) [self handleShadows];
-    if (option == PPRevealSideOptionsiOS7StatusBarMoving || option == PPRevealSideOptionsiOS7StatusBarFading) self.underStatusBarView = nil;
 }
 
 - (void)setPanInteractionsWhenClosed:(PPRevealSideInteractions)panInteractionsWhenClosed {
@@ -810,28 +802,6 @@
     [self didChangeValueForKey:@"tapInteractionsWhenOpened"];
 }
 
-- (void)setFakeiOS7StatusBarColor:(UIColor *)fakeiOS7StatusBarColor
-{
-    [self willChangeValueForKey:@"fakeiOS7StatusBarColor"];
-    _fakeiOS7StatusBarColor = PP_RETAIN(fakeiOS7StatusBarColor);
-    if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading]) {
-        // Dot not use `self.` because we don't want to create the view if not existing
-        _underStatusBarView.backgroundColor = fakeiOS7StatusBarColor;
-    }
-    [self didChangeValueForKey:@"fakeiOS7StatusBarColor"];
-}
-
-- (void)setUnderStatusBarView:(UIView *)underStatusBarView
-{
-    [self willChangeValueForKey:@"underStatusBarView"];
-
-    if (!underStatusBarView) {
-        [_underStatusBarView removeFromSuperview];
-    }
-    _underStatusBarView = PP_RETAIN(underStatusBarView);
-    [self didChangeValueForKey:@"underStatusBarView"];
-}
-
 #pragma mark - Getters
 
 - (PPRevealSideDirection)sideDirectionOpened {
@@ -844,34 +814,11 @@
 
 - (PPRevealSideViewSettings *) settings
 {
-	if (_settings == nil) {
-		_settings = [[PPRevealSideViewController defaultSettings] copy];
-	}
-	
-	return _settings;
-}
-
-
-- (UIView *)underStatusBarView
-{
-    if (!PPSystemVersionGreaterOrEqualThan(7.0)) return nil;
-    
-    if (!_underStatusBarView && ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading] || [self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving])) {
-        _underStatusBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(PPScreenBounds()), 20.0f)];
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading]) {
-            _underStatusBarView.backgroundColor = self.fakeiOS7StatusBarColor;
-        }
-        else if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-            UIView *screenShot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
-            [_underStatusBarView addSubview:screenShot];
-            [_underStatusBarView setClipsToBounds:YES];
-        }
-        
-        [self.view addSubview:_underStatusBarView];
+    if (_settings == nil) {
+        _settings = [[PPRevealSideViewController defaultSettings] copy];
     }
     
-    [self.view bringSubviewToFront:_underStatusBarView];
-    return _underStatusBarView;
+    return _settings;
 }
 
 #pragma mark - Private methods
@@ -951,48 +898,14 @@
 
 - (void) handleiOS7StatusBarOnManualMoveWithOffset:(CGFloat)offset
 {
-    if (self.underStatusBarView) {
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading]) {
-            offset = MIN(offset, (_currentPanDirection == PPRevealSideDirectionLeft || _currentPanDirection == PPRevealSideDirectionRight) ? CGRectGetWidth(PPScreenBounds()) : CGRectGetHeight(PPScreenBounds()));
-
-            self.underStatusBarView.alpha = 1.0/(CGRectGetWidth(PPScreenBounds()) - [self offsetForCurrentPaningDirection]) * (-offset + CGRectGetWidth(PPScreenBounds()));
-        }
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-            CGRect newFrame = self.underStatusBarView.frame;
-            newFrame.origin.x = CGRectGetMinX(self.rootViewController.view.frame);
-            self.underStatusBarView.frame = newFrame;
-            
-            [self setStatusBarHidden:YES];
-        }
-    }
 }
 
 - (void) handleiOS7StatusWillPushWithFinalX:(CGFloat)finalX
 {
-    if (self.underStatusBarView) {
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading]) {
-            self.underStatusBarView.alpha = 1.0;
-        }
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-            CGRect newFrame = self.underStatusBarView.frame;
-            newFrame.origin.x = finalX;
-            self.underStatusBarView.frame = newFrame;
-        }
-    }
 }
 
 - (void) handleiOS7StatusWillPopWithFinalX:(CGFloat)finalX
 {
-    if (self.underStatusBarView) {
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarFading]) {
-            self.underStatusBarView.alpha = 0.0;
-        }
-        if ([self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving]) {
-            CGRect newFrame = self.underStatusBarView.frame;
-            newFrame.origin.x = finalX;
-            self.underStatusBarView.frame = newFrame;
-        }
-    }
 }
 
 - (void)informDelegateWithOptionalSelector:(SEL)selector withParam:(id)param {
@@ -1232,9 +1145,9 @@
     //if (_wasClosed)
     // Don't know why I limited this test to the case pan from close. The same set min should happen when from open.
     // That's probably a failed attempt to handle slide from left to right when having controllers on both side. This works fine without this test
-//    if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight) offset = MIN(CGRectGetWidth(PPScreenBounds()), offset);
+    //    if (direction == PPRevealSideDirectionLeft || direction == PPRevealSideDirectionRight) offset = MIN(CGRectGetWidth(PPScreenBounds()), offset);
     
-//    if (direction == PPRevealSideDirectionTop || direction == PPRevealSideDirectionBottom) offset = MIN(CGRectGetHeight(self.view.frame), offset);
+    //    if (direction == PPRevealSideDirectionTop || direction == PPRevealSideDirectionBottom) offset = MIN(CGRectGetHeight(self.view.frame), offset);
     CGRect rectToReturn = CGRectZero;
     rectToReturn.size = _rootViewController.view.frame.size;
     
@@ -1304,7 +1217,7 @@
     }
     
     slideFrame.origin.y += yOffset;
-
+    
     return slideFrame;
 }
 
@@ -1417,7 +1330,7 @@
     if (_currentPanDirection == PPRevealSideDirectionNone) {
         CGFloat panDiffX = currentPoint.x - _panOrigin.x;
         CGFloat panDiffY = currentPoint.y - _panOrigin.y;
-		
+        
         if (panDiffX > 0 && panDiffX > self.settings.offsetTriggerChoseDirection)
             _currentPanDirection = PPRevealSideDirectionLeft;
         else
@@ -1609,14 +1522,14 @@
     
     if (!PPSystemVersionGreaterOrEqualThan(5.0)) [_rootViewController willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
-//    [self resizeCurrentView];
+    //    [self resizeCurrentView];
     
     for (id key in _viewControllers.allKeys) {
         UIViewController *controller = (UIViewController *)[_viewControllers objectForKey:key];
         
         if (controller.view.superview) {
-//            controller.view.frame = [self getSideViewFrameFromRootFrame:_rootViewController.view.frame
-//                                                           andDirection:[key intValue]];
+            //            controller.view.frame = [self getSideViewFrameFromRootFrame:_rootViewController.view.frame
+            //                                                           andDirection:[key intValue]];
             if (!PPSystemVersionGreaterOrEqualThan(5.0)) [controller willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
         }
     }
@@ -1671,23 +1584,27 @@
 #pragma mark - iOS 7 status bar
 
 - (void)setStatusBarHidden:(BOOL)hidden {
-    if (!PPSystemVersionGreaterOrEqualThan(7.0)) {
-        return;
-    }
-    
-    BOOL UIViewControllerBasedStatusBarAppearance = YES; // Default on iOS 7
-    id thing = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIViewControllerBasedStatusBarAppearance"];
-    if (thing) {
-        UIViewControllerBasedStatusBarAppearance = [thing boolValue];
-    }
-    
-    if (UIViewControllerBasedStatusBarAppearance) {
-        if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-            self.hideStatusBar = hidden;
-            [self setNeedsStatusBarAppearanceUpdate];
-        }
-    } else {
-        [UIApplication sharedApplication].statusBarHidden = hidden;
+    if (PPSystemVersionGreaterOrEqualThan(7.0)) {
+        self.hideStatusBar = hidden;
+        CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+        BOOL isMoving = [self isOptionEnabled:PPRevealSideOptionsiOS7StatusBarMoving];
+        UIStatusBarAnimation animationStyle = isMoving ? UIStatusBarAnimationSlide : UIStatusBarAnimationFade;
+        
+        // NOTE: This is a gross gross gross hack. We want to hide the status bar, but iOS 7 really wants
+        // to shift the view to account for the change in height. To counter this, we wrap the setter in an
+        // animation block and set the frame back to what _we_ want manually. This is all done inside an
+        // animation block since otherwise the shifting view will "jump" before animating to its proper position
+        [UIView animateWithDuration:0.3 animations:^{
+            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animationStyle];
+            
+            if (isMoving && hidden && [self.rootViewController isKindOfClass:[UINavigationController class]]) {
+                UINavigationController *nav = (UINavigationController *)self.rootViewController;
+                CGRect frame = nav.topViewController.view.frame;
+                frame.origin.y += statusBarHeight;
+                frame.size.height -= statusBarHeight;
+                nav.topViewController.view.frame = frame;
+            }
+        }];
     }
 }
 
@@ -1762,9 +1679,9 @@ static char revealSideViewControllerKey;
     
     if (!controller && self.tabBarController) controller = self.tabBarController.revealSideViewController;
     
-	if (controller == nil && self.parentViewController != nil)
-		controller = [self.parentViewController revealSideViewController];
-		
+    if (controller == nil && self.parentViewController != nil)
+        controller = [self.parentViewController revealSideViewController];
+    
     return controller;
 }
 
